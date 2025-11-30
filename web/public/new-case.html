@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Case</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        button { padding: 12px 20px; font-size: 16px; margin-top: 20px; }
+        .option { margin: 15px 0; }
+    </style>
+</head>
+
+<body>
+    <h2>Create a New Case</h2>
+
+    <p>Select how you want to submit your message:</p>
+
+    <div class="option">
+        <input type="radio" id="anonymous" name="mode" value="Anonymous" checked>
+        <label for="anonymous">Submit Anonymously</label>
+    </div>
+
+    <div class="option">
+        <input type="radio" id="identified" name="mode" value="Identified">
+        <label for="identified">Submit with My Name</label><br>
+
+        <input id="sender" placeholder="Enter your name (optional when anonymous)">
+    </div>
+
+    <button onclick="createCase()">Create Case</button>
+
+    <div id="result" style="margin-top:30px; font-size:18px;"></div>
+
+    <script>
+        async function createCase() {
+            const mode = document.querySelector("input[name='mode']:checked").value;
+            const sender = document.getElementById("sender").value.trim();
+
+            const res = await fetch("/api/createCase", {
+                method: "POST",
+                body: JSON.stringify({ mode, sender })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) return alert("Error creating case");
+
+            document.getElementById("result").innerHTML = `
+                <b>Case Created Successfully!</b><br><br>
+                Case ID: <b>${data.caseId}</b><br>
+                Passcode: <b>${data.passcode}</b><br><br>
+                <button onclick="goToChat('${data.caseId}', '${data.passcode}', '${mode}')">
+                    Go to Chat
+                </button>
+            `;
+        }
+
+        function goToChat(caseId, passcode, mode) {
+            localStorage.setItem("caseId", caseId);
+            localStorage.setItem("passcode", passcode);
+            localStorage.setItem("mode", mode);
+            location.href = "chat.html";
+        }
+    </script>
+</body>
+</html>

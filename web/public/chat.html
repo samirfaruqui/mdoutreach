@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpeakUp – Case Chat</title>
+    <style>
+        body { font-family: Arial; padding: 30px; }
+        #messages {
+            border: 1px solid #ccc;
+            padding: 15px;
+            height: 350px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .msg { margin: 10px 0; padding: 10px; background: #f2f2f2; border-radius: 5px; }
+        .me { background: #d2f8d2; }
+        button { padding: 10px 20px; margin-top: 10px; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 8px; }
+    </style>
+</head>
+
+<body>
+    <h2>Case Conversation</h2>
+
+    <p>
+        <b>Case ID:</b> <span id="cid"></span><br>
+        <b>Mode:</b> <span id="mode"></span>
+    </p>
+
+    <div id="messages">Loading messages...</div>
+
+    <textarea id="newMessage" placeholder="Type your message"></textarea>
+    <button onclick="sendMessage()">Send Message</button>
+    <button onclick="loadMessages()">Refresh</button>
+
+    <script>
+        const caseId = localStorage.getItem("caseId");
+        const passcode = localStorage.getItem("passcode");
+        const mode = localStorage.getItem("mode");
+
+        document.getElementById("cid").innerText = caseId;
+        document.getElementById("mode").innerText = mode;
+
+        async function loadMessages() {
+            const res = await fetch(`/api/getMessages?caseId=${caseId}`);
+            const data = await res.json();
+
+            if (!data.success) {
+                document.getElementById("messages").innerHTML = "Failed to load messages";
+                return;
+            }
+
+            const container = document.getElementById("messages");
+            container.innerHTML = "";
+
+            data.messages.forEach(msg => {
+                const div = document.createElement("div");
+                div.className = "msg";
+                div.innerHTML = `
+                    <b>${msg.sender}</b><br>
+                    ${msg.message}<br>
+                    <small>${msg.sentAt}</small>
+                `;
+                container.appendChild(div);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = document.getElementById("newMessage").value.trim();
+            if (!text) return alert("Enter a message");
+
+            const res = await fetch("/api/submitMessage", {
+                method: "POST",
+                body: JSON.stringify({
+                    caseId,
+                    message: text,
+                    sender: mode === "Identified" ? "Employee" : "Anonymous User"
+                })
+            });
+
+            const data = await res.json();
+            if (!data.success) return alert("Failed to send message");
+
+            document.getElementById("newMessage").value = "";
+            loadMessages();
+        }
+
+        loadMessages();
+    </script>
+</body>
+</html>
