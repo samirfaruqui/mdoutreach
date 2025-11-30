@@ -1,65 +1,276 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Create New Case</title>
-    <style>
-        body { font-family: Arial; padding: 40px; }
-        button { padding: 12px 20px; font-size: 16px; margin-top: 20px; }
-        .option { margin: 15px 0; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create a New Case – SpeakUp</title>
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-soft: #6366f1;
+      --accent-green: #22c55e;
+      --accent-blue: #0ea5e9;
+      --bg-soft: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #6b7280;
+      --radius: 18px;
+      --shadow-soft: 0 20px 45px rgba(15, 23, 42, 0.15);
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: radial-gradient(circle at top left, #e0f2fe 0, #eef2ff 40%, #f9fafb 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      color: var(--text-main);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      padding: 26px 26px 32px;
+      border-radius: 26px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .header-section {
+      background: linear-gradient(135deg, var(--primary), #6366f1, #8b5cf6);
+      color: white;
+      padding: 26px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-section::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      top: -40px;
+      right: -40px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 60%);
+      border-radius: 50%;
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .option-block {
+      margin-bottom: 22px;
+      cursor: pointer;
+      padding: 6px 2px;
+      border-radius: 12px;
+      transition: background 0.15s ease;
+    }
+
+    .option-block:hover {
+      background: rgba(99, 102, 241, 0.06);
+    }
+
+    .option-block * {
+      cursor: pointer;
+    }
+
+    /* Apple-style radio */
+    input[type="radio"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.2s;
+      vertical-align: middle;
+    }
+
+    input[type="radio"]:checked {
+      border-color: var(--primary);
+      background: radial-gradient(circle, var(--primary) 40%, white 50%);
+    }
+
+    label {
+      font-size: 15px;
+      font-weight: 500;
+      margin-left: 6px;
+      color: var(--text-main);
+    }
+
+    #sender-block {
+      display: none;
+      margin-top: 12px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      margin-top: 10px;
+      font-size: 15px;
+      background: #f9fafb;
+      transition: 0.15s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary-soft);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+      background: white;
+      outline: none;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+      color: white;
+      border-radius: 999px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 18px 35px rgba(79, 70, 229, 0.35);
+      transition: 0.15s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 25px 45px rgba(79, 70, 229, 0.55);
+    }
+
+    .result-box {
+      margin-top: 24px;
+      padding: 18px;
+      width: 100%;
+      background: #eef2ff;
+      border-radius: 14px;
+      border: 1px solid #c7d2fe;
+      font-size: 15px;
+    }
+
+    .go-btn {
+      background: var(--accent-green);
+      border: none;
+      padding: 12px 16px;
+      border-radius: 999px;
+      color: white;
+      font-size: 15px;
+      margin-top: 12px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 16px;
+      }
+
+      .header-section {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <h2>Create a New Case</h2>
+  <div class="container">
+    <div class="header-section">
+      <h2>Create a New Case</h2>
+      <p class="subtitle">Stay anonymous or include your name — it's your choice.</p>
+    </div>
 
-    <p>Select how you want to submit your message:</p>
+    <div class="card">
 
-    <div class="option">
-        <input type="radio" id="anonymous" name="mode" value="Anonymous" checked>
+      <div class="option-block" onclick="document.getElementById('anonymous').click()">
+        <input type="radio" id="anonymous" name="mode" value="Anonymous" checked onclick="toggleName(false)">
         <label for="anonymous">Submit Anonymously</label>
+      </div>
+
+      <div class="option-block" onclick="document.getElementById('identified').click()">
+        <input type="radio" id="identified" name="mode" value="Identified" onclick="toggleName(true)">
+        <label for="identified">Submit with My Name</label>
+
+        <div id="sender-block">
+          <input type="text" id="sender" placeholder="Enter your name">
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="createCase()">Create Case</button>
+
+      <div id="result"></div>
     </div>
+  </div>
 
-    <div class="option">
-        <input type="radio" id="identified" name="mode" value="Identified">
-        <label for="identified">Submit with My Name</label><br>
+  <script>
+    function toggleName(show) {
+      const block = document.getElementById("sender-block");
+      block.style.display = show ? "block" : "none";
 
-        <input id="sender" placeholder="Enter your name (optional when anonymous)">
-    </div>
+      // Smooth scroll to name field when shown
+      if (show) {
+        setTimeout(() => {
+          document.getElementById("sender").scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        }, 120);
+      }
+    }
 
-    <button onclick="createCase()">Create Case</button>
+    async function createCase() {
+      const mode = document.querySelector("input[name='mode']:checked").value;
+      const sender = document.getElementById("sender").value.trim();
 
-    <div id="result" style="margin-top:30px; font-size:18px;"></div>
+      const res = await fetch("/api/createCase", {
+        method: "POST",
+        body: JSON.stringify({ mode, sender })
+      });
 
-    <script>
-        async function createCase() {
-            const mode = document.querySelector("input[name='mode']:checked").value;
-            const sender = document.getElementById("sender").value.trim();
+      const data = await res.json();
 
-            const res = await fetch("/api/createCase", {
-                method: "POST",
-                body: JSON.stringify({ mode, sender })
-            });
+      if (!data.success) {
+        alert("Could not create case.");
+        return;
+      }
 
-            const data = await res.json();
+      document.getElementById("result").innerHTML = `
+        <div class="result-box">
+          <b>Case Created Successfully! 🎉</b><br><br>
+          Case ID: <b>${data.caseId}</b><br>
+          Passcode: <b>${data.passcode}</b><br><br>
 
-            if (!data.success) return alert("Error creating case");
+          <button class="go-btn" onclick="goToChat('${data.caseId}', '${data.passcode}', '${mode}')">
+            Go to Chat →
+          </button>
+        </div>
+      `;
+    }
 
-            document.getElementById("result").innerHTML = `
-                <b>Case Created Successfully!</b><br><br>
-                Case ID: <b>${data.caseId}</b><br>
-                Passcode: <b>${data.passcode}</b><br><br>
-                <button onclick="goToChat('${data.caseId}', '${data.passcode}', '${mode}')">
-                    Go to Chat
-                </button>
-            `;
-        }
-
-        function goToChat(caseId, passcode, mode) {
-            localStorage.setItem("caseId", caseId);
-            localStorage.setItem("passcode", passcode);
-            localStorage.setItem("mode", mode);
-            location.href = "chat.html";
-        }
-    </script>
+    function goToChat(caseId, passcode, mode) {
+      localStorage.setItem("caseId", caseId);
+      localStorage.setItem("passcode", passcode);
+      localStorage.setItem("mode", mode);
+      location.href = "chat.html";
+    }
+  </script>
 </body>
+
 </html>
