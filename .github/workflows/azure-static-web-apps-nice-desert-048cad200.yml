@@ -10,19 +10,36 @@ on:
       - main
 
 jobs:
-  build_and_deploy_job:
+  build_and_deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy
-
+    name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
 
-      # No Node, no build. Just upload the static files.
-      - name: Deploy static site to Azure Static Web Apps
+      - name: Build And Deploy
+        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NICE_DESERT_048CAD200 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "web"        # folder containing index.html
-          skip_app_build: true       # <-- key line; disables Oryx build
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          
+          # 👇 VERY IMPORTANT — correct project structure paths
+          app_location: "web/public"    # your HTML site folder
+          api_location: "api"           # your Node.js API folder
+          output_location: ""           # no build output folder for static site
+          
+          # Optional — for Node backend
+          api_build_command: "npm install"
+
+        env:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+
+  close_pull_request:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == false
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: "close"
