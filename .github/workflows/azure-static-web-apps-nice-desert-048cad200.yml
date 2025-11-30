@@ -14,32 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          
-          # 👇 VERY IMPORTANT — correct project structure paths
-          app_location: "web/public"    # your HTML site folder
-          api_location: "api"           # your Node.js API folder
-          output_location: ""           # no build output folder for static site
-          
-          # Optional — for Node backend
-          api_build_command: "npm install"
-
-        env:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-
-  close_pull_request:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == false
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          action: "close"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          #### IMPORTANT FIX ####
+          app_location: "web/public"
+          api_location: "api"
+          output_location: ""
